@@ -3,8 +3,8 @@
     "version": "1.0.0",
     "title": "Teleport to Train Station",
     "author": "Sydream",
-    "homepage": "https://github.com/sydream/FactorioMods/TeleportToTrainStation",
-    "description": "{locale}",
+    "homepage": "https://github.com/tommasodargenio/syd-teleport-to-train-station",
+    "description": "{mod-description}",
     "factorio_version": "1.0",
     "dependencies": [
         "base >= 1.0.0"        

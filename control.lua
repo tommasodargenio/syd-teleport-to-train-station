@@ -3,8 +3,8 @@
      a Factorio mod.
      (C) SyDream - Nov 2020 - v1.0.0
      MIT License
-     https://github/....repo
-     https://factorio mod link   
+     https://github.com/tommasodargenio/syd-teleport-to-train-station
+     https://mods.factorio.com/mod/syd-teleport-to-train-station
      
     
     CONTROL.LUA
