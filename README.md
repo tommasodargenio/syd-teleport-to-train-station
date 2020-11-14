@@ -1,6 +1,6 @@
 # Teleport to Train Station
 
-A mod for the game [Fatorio](https://www.factorio.com).
+A mod for the game [Factorio](https://www.factorio.com).
 
 You may want to use this mod if answering yes to one or more of the following questions:
 
