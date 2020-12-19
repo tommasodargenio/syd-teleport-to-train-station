@@ -1,7 +1,7 @@
 --[[
      Teleport-To-Train-Station
      a Factorio mod.
-     (C) SyDream - Nov 2020 - v1.0.0
+     (C) SyDream - 2020 - v1.0.1
      MIT License
      https://github.com/tommasodargenio/syd-teleport-to-train-station
      https://mods.factorio.com/mod/syd-teleport-to-train-station
@@ -163,6 +163,14 @@ function guiElementContains(haystack, needle)
     return false
 end
 
+function cleanGUI()
+    local screenGui = game.players[1].gui.screen
+    if table_size(screenGui.children)>0 then         
+        local leftoverTSGui = screenGui.children[1]
+        leftoverTSGui.destroy()
+    end    
+end
+
 
 
 script.on_event(defines.events.on_gui_text_changed, function(event)
@@ -195,6 +203,8 @@ script.on_event(defines.events.on_gui_click, function(event)
     elseif (event.element.name=="close-teleport-ts-window") then
         if (teleport_gui ~= nil) then 
             teleport_gui.destroy()
+        else 
+            cleanGUI()
         end
     elseif (event.element.name=="toggleTeleportTS") then
         local gui = game.players[event.player_index].gui
@@ -204,6 +214,13 @@ script.on_event(defines.events.on_gui_click, function(event)
     end    
 end)
 
+script.on_configuration_changed(function (changes)
+    cleanGUI() 
+end)
+
+script.on_init(function()
+    cleanGUI() 
+end)
 
 script.on_event("teleport-to-train-station-hotkey", on_hotkey_main)
 

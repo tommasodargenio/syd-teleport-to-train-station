@@ -1,7 +1,7 @@
 --[[
      Teleport-To-Train-Station
      a Factorio mod.
-     (C) SyDream - Nov 2020 - v1.0.0
+     (C) SyDream - 2020 - v1.0.1
      MIT License
      https://github.com/tommasodargenio/syd-teleport-to-train-station
      https://mods.factorio.com/mod/syd-teleport-to-train-station

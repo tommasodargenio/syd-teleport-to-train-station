@@ -1,4 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.0.1
+Date: 2020-12-20
+
+  Bugfixes:
+    - Fixed bug on GUI getting unresponsive when loading a save/autosave while mod gui is open. Reference issue on Github [http://bit.ly/3h428nJ]
+
+---------------------------------------------------------------------------------------------------
 Version: 1.0.0
 Date: 2020-11-14
 
