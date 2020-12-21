@@ -165,9 +165,11 @@ end
 
 function cleanGUI()
     local screenGui = game.players[1].gui.screen
-    if table_size(screenGui.children)>0 then         
-        local leftoverTSGui = screenGui.children[1]
-        leftoverTSGui.destroy()
+    if table_size(screenGui.children)>0 then      
+        if screenGui["teleport-ts-gui"] ~= nil then   
+            local leftoverTSGui = screenGui.children[1]
+            leftoverTSGui.destroy()
+        end
     end    
     train_station_filter = ""
 end
