@@ -10,7 +10,7 @@
     CONTROL.LUA
     -- Core of the mod includes all the runtime scripting
 --]]
-local teleport_ts_win = {type="frame",  name="teleport-ts-gui", direction="vertical", header_filler_style={type="empty_widget_style", parent="draggable_space_header", height=24}, use_header_filler=true}
+teleport_ts_win = {type="frame",  name="teleport-ts-gui", direction="vertical", header_filler_style={type="empty_widget_style", parent="draggable_space_header", height=24}, use_header_filler=true}
 
 train_station_filter = ""
 teleport_gui = nil
@@ -174,6 +174,11 @@ function cleanGUI()
     train_station_filter = ""
 end
 
+function resyncTeleportGui(player_index)
+    if game.players[player_index].gui.screen["teleport-ts-gui"] ~= nil then
+        teleport_gui = game.players[player_index].gui.screen["teleport-ts-gui"]
+    end
+end
 
 
 script.on_event(defines.events.on_gui_text_changed, function(event)
@@ -187,11 +192,12 @@ script.on_event(defines.events.on_gui_text_changed, function(event)
 end)
 
 script.on_event(defines.events.on_gui_click, function(event)
+    resyncTeleportGui(event.player_index)
     if (event.element.name=="teleport-ts-gui-btn") then
         local gui_win = game.players[event.player_index].gui.screen["teleport-ts-gui"]
         train_station_teleport(event.player_index, gui_win.dd_flow["teleport-ts-gui-dd"].selected_index)    
     elseif (event.element.name=="teleport-ts-gui-toggle-filter") then
-        local gui_win = game.players[event.player_index].gui.screen["teleport-ts-gui"].title_flow                
+        local gui_win = game.players[event.player_index].gui.screen["teleport-ts-gui"].title_flow
         if (guiElementContains(gui_win.children, "teleport-ts-gui-dd-filter-query")) then
             gui_location = teleport_gui.location
             teleport_gui.destroy()
