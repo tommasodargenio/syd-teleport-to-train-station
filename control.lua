@@ -218,10 +218,6 @@ script.on_configuration_changed(function (changes)
     cleanGUI() 
 end)
 
-script.on_init(function()
-    cleanGUI() 
-end)
-
 script.on_event("teleport-to-train-station-hotkey", on_hotkey_main)
 
 script.on_event(defines.events.on_lua_shortcut, teleport_ts_shortcut)
