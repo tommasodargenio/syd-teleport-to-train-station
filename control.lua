@@ -169,6 +169,7 @@ function cleanGUI()
         local leftoverTSGui = screenGui.children[1]
         leftoverTSGui.destroy()
     end    
+    train_station_filter = ""
 end
 
 
