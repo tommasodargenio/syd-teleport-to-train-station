@@ -212,6 +212,7 @@ script.on_event(defines.events.on_gui_click, function(event)
     elseif (event.element.name=="close-teleport-ts-window") then
         if (teleport_gui ~= nil) then 
             teleport_gui.destroy()
+            train_station_filter = ""
         else 
             cleanGUI()
         end

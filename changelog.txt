@@ -1,4 +1,13 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.0.2
+Date: 2020-12-21
+
+  Bugfixes:
+    - Fixed cricital bug when searchbar click after loading a save/autosave. Reference issue on Github [http://bit.ly/3axS1WI]
+  Minor Features:
+    - Search bar now clears when closing the GUI. Reference Feature Request on Github [http://bit.ly/3nFSWbA]
+
+---------------------------------------------------------------------------------------------------
 Version: 1.0.1
 Date: 2020-12-20
 
