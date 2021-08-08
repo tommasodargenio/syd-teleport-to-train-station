@@ -19,6 +19,7 @@ gui_location = nil
 
 function train_station_teleport(player_idx, station_selected)
     local train_stations_list = get_train_stations_list()
+	local ix = 0
     local train_station_position = nil
     local player = game.players[player_idx]
     local destination_surface = game.surfaces["nauvis"]
@@ -50,6 +51,15 @@ function train_station_teleport(player_idx, station_selected)
     end    
 end
 
+local function has_value (tab, val)
+    for index, value in ipairs(tab) do
+        if value == val then
+            return true
+        end
+    end
+    return false
+end
+
 
 function get_train_stations_list(train_filter) 
     local train_stations = {}
@@ -59,9 +69,11 @@ function get_train_stations_list(train_filter)
     local t = surface.get_train_stops()
 
     for _, train_station in pairs(t) do
-        table.insert(train_stations, {name=train_station.backer_name, position=train_station.position})
-        table.insert(train_station_names, train_station.backer_name)
-    end
+		if not has_value(train_station_names,train_station.backer_name) then
+			table.insert(train_stations, {name=train_station.backer_name, position=train_station.position})
+			table.insert(train_station_names, train_station.backer_name)
+		end
+	end
     table.sort(train_station_names)
 
     for _, name in pairs(train_station_names) do 
