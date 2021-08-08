@@ -37,21 +37,21 @@ function train_station_teleport(player_idx, station_selected)
                 if not destination_pos then destination_pos = train_station_position end                
                 player.vehicle.teleport(destination_pos, destination_surface)
             end
-        elseif math.floor(player.position.x + 0.5) ~= math.floor(train_station_position.x + 0.5) or
+        elseif player.character and player.character.valid then
+			if math.floor(player.position.x + 0.5) ~= math.floor(train_station_position.x + 0.5) or
                math.floor(player.position.y + 0.5) ~= math.floor(train_station_position.y + 0.5) then
-            if player.character and player.character.valid then
                 destination_pos =  destination_surface.find_non_colliding_position(player.character.prototype.name, train_station_position, 10, 1)
                 if not  destination_pos then  destination_pos = train_station_position end
                 player.teleport(destination_pos, destination_surface)
             end
-            
-            
+        elseif player and player.valid then
+			player.teleport(train_station_position)            
         end
     end    
 end
 
 
-function get_train_stations_list() 
+function get_train_stations_list(train_filter) 
     local train_stations = {}
     local train_stations_ordered = {}
     local train_station_names = {}
@@ -67,8 +67,8 @@ function get_train_stations_list()
     for _, name in pairs(train_station_names) do 
         for _, train_station in pairs(train_stations) do 
             if (train_station.name == name) then
-                if (train_station_filter ~= "") then 
-                    if (string.match(train_station.name:lower(), train_station_filter:lower())) then
+                if (train_filter and train_filter ~= "") then 
+                    if (string.match(train_station.name:lower(), train_filter:lower())) then
                         table.insert(train_stations_ordered, train_station)
                     end
                 else
@@ -187,7 +187,7 @@ script.on_event(defines.events.on_gui_text_changed, function(event)
         gui_location = teleport_gui.location
         teleport_gui.destroy()
         local gui = game.players[event.player_index].gui
-        teleport_gui_draw(gui,get_train_stations_name(get_train_stations_list()), true, false)        
+        teleport_gui_draw(gui,get_train_stations_name(get_train_stations_list(train_station_filter)), true, false)        
     end
 end)
 
@@ -197,17 +197,20 @@ script.on_event(defines.events.on_gui_click, function(event)
         local gui_win = game.players[event.player_index].gui.screen["teleport-ts-gui"]
         train_station_teleport(event.player_index, gui_win.dd_flow["teleport-ts-gui-dd"].selected_index)    
     elseif (event.element.name=="teleport-ts-gui-toggle-filter") then
+		game.players[event.player_index].print("toggle filter")
         local gui_win = game.players[event.player_index].gui.screen["teleport-ts-gui"].title_flow
         if (guiElementContains(gui_win.children, "teleport-ts-gui-dd-filter-query")) then
+			game.players[event.player_index].print("contains")
             gui_location = teleport_gui.location
             teleport_gui.destroy()
             local gui = game.players[event.player_index].gui
             teleport_gui_draw(gui,get_train_stations_name(get_train_stations_list()), false, false)
         else
+			game.players[event.player_index].print("not contains")
             gui_location = teleport_gui.location
             teleport_gui.destroy()
             local gui = game.players[event.player_index].gui
-            teleport_gui_draw(gui,get_train_stations_name(get_train_stations_list()), true, false)            
+            teleport_gui_draw(gui,get_train_stations_name(get_train_stations_list(train_station_filter)), true, false)            
         end
     elseif (event.element.name=="close-teleport-ts-window") then
         if (teleport_gui ~= nil) then 
