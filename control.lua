@@ -197,16 +197,13 @@ script.on_event(defines.events.on_gui_click, function(event)
         local gui_win = game.players[event.player_index].gui.screen["teleport-ts-gui"]
         train_station_teleport(event.player_index, gui_win.dd_flow["teleport-ts-gui-dd"].selected_index)    
     elseif (event.element.name=="teleport-ts-gui-toggle-filter") then
-		game.players[event.player_index].print("toggle filter")
         local gui_win = game.players[event.player_index].gui.screen["teleport-ts-gui"].title_flow
         if (guiElementContains(gui_win.children, "teleport-ts-gui-dd-filter-query")) then
-			game.players[event.player_index].print("contains")
             gui_location = teleport_gui.location
             teleport_gui.destroy()
             local gui = game.players[event.player_index].gui
             teleport_gui_draw(gui,get_train_stations_name(get_train_stations_list()), false, false)
         else
-			game.players[event.player_index].print("not contains")
             gui_location = teleport_gui.location
             teleport_gui.destroy()
             local gui = game.players[event.player_index].gui
