@@ -19,7 +19,6 @@ gui_location = nil
 
 function train_station_teleport(player_idx, station_selected)
     local train_stations_list = get_train_stations_list()
-	local ix = 0
     local train_station_position = nil
     local player = game.players[player_idx]
     local destination_surface = game.surfaces["nauvis"]
