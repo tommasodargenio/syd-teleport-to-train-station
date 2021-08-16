@@ -1,4 +1,15 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.0.4
+Date: 2021-08-15
+
+  Minor Features:
+    - Works with no player characters (contributor: hreintke)
+  Changes:
+    - Train station filter now works only when filter field is visible (contributor: hreintke)
+  Bugfixes:
+    - Removed debug prints (contributor: hreintke)
+    - Fixed typos (contributor: hreintke)
+---------------------------------------------------------------------------------------------------
 Version: 1.0.3
 Date: 2021-02-25
 

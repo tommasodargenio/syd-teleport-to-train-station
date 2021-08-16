@@ -28,3 +28,7 @@ Be advised, I have not tested this in multiplayer.
 Icons - inspired by teleportation icon from HiClipart
 
 Inspiration from [TeleportShortcutsAndHotkeys](https://mods.factorio.com/mod/TeleportShortcutsAndHotkeys) mod by "hannes-j" / "FantasyLord"
+
+## Contributors
+
+hreintke - https://github.com/hreintke
