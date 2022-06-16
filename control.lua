@@ -18,7 +18,7 @@ gui_location = nil
 
 
 function train_station_teleport(player_idx, station_selected)
-    local train_stations_list = get_train_stations_list()
+    local train_stations_list = get_train_stations_list(train_station_filter)
     local train_station_position = nil
     local player = game.players[player_idx]
     local destination_surface = game.surfaces["nauvis"]
@@ -115,13 +115,13 @@ end
 function on_hotkey_main(event)
     local gui = game.players[event.player_index].gui
     if not gui.screen["teleport-ts-gui"] then       
-        teleport_gui_draw(gui,get_train_stations_name(get_train_stations_list()), false, true)
+        teleport_gui_draw(gui,get_train_stations_name(get_train_stations_list()), false, true, event)
     end    
 end
 
 
 
-function teleport_gui_draw(gui,train_stations_list,filter_toggle,firstLoad)
+function teleport_gui_draw(gui, train_stations_list, filter_toggle, firstLoad, event)
     
     local teleport_ts_btn = {type="button", name="teleport-ts-gui-btn", caption={"mod-interface.teleport-ts-button"}}
 
@@ -212,7 +212,7 @@ script.on_event(defines.events.on_gui_text_changed, function(event)
         gui_location = teleport_gui.location
         teleport_gui.destroy()
         local gui = game.players[event.player_index].gui
-        teleport_gui_draw(gui,get_train_stations_name(get_train_stations_list(train_station_filter)), true, false)        
+        teleport_gui_draw(gui,get_train_stations_name(get_train_stations_list(train_station_filter)), true, false, event)        
     end
 end)
 
@@ -227,12 +227,12 @@ script.on_event(defines.events.on_gui_click, function(event)
             gui_location = teleport_gui.location
             teleport_gui.destroy()
             local gui = game.players[event.player_index].gui
-            teleport_gui_draw(gui,get_train_stations_name(get_train_stations_list()), false, false)
+            teleport_gui_draw(gui,get_train_stations_name(get_train_stations_list()), false, false, event)
         else
             gui_location = teleport_gui.location
             teleport_gui.destroy()
             local gui = game.players[event.player_index].gui
-            teleport_gui_draw(gui,get_train_stations_name(get_train_stations_list(train_station_filter)), true, false)            
+            teleport_gui_draw(gui,get_train_stations_name(get_train_stations_list(train_station_filter)), true, false, event)            
         end
     elseif (event.element.name=="close-teleport-ts-window") then
         if (teleport_gui ~= nil) then 
@@ -244,7 +244,7 @@ script.on_event(defines.events.on_gui_click, function(event)
     elseif (event.element.name=="toggleTeleportTS") then
         local gui = game.players[event.player_index].gui
         if not gui.screen["teleport-ts-gui"] then       
-            teleport_gui_draw(gui,get_train_stations_name(get_train_stations_list()), false, true)
+            teleport_gui_draw(gui,get_train_stations_name(get_train_stations_list()), false, true, event)
         end        
     end    
 end)
