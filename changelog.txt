@@ -4,6 +4,8 @@ Date: 2022-06-16
 
   Features:
     - Added new settings to allow the train station drop down list to be bigger (contributor: Christian Moller Nielsen)
+  Bugfixes:
+    - Fixed bug preventing user to teleport to the correct station when using the search function (contributor: Christian Moller Nielsen)    
 ---------------------------------------------------------------------------------------------------
 Version: 1.0.4
 Date: 2021-08-15
