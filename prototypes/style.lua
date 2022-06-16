@@ -16,6 +16,43 @@ data.raw["gui-style"].default["teleport_ts_gui_dd_filter_query"] = {
     maximal_width = 80
 }
 
+data.raw["gui-style"].default["teleport_ts_dropdown_style_40"] = {
+    type = "dropdown_style",
+    list_box_style =
+    {
+      type = "list_box_style",      
+      maximal_height = 28 * 40      
+    }    
+}
+
+data.raw["gui-style"].default["teleport_ts_dropdown_style_30"] = {
+    type = "dropdown_style",
+    list_box_style =
+    {
+      type = "list_box_style",      
+      maximal_height = 28 * 30      
+    }    
+}
+
+data.raw["gui-style"].default["teleport_ts_dropdown_style_20"] = {
+    type = "dropdown_style",
+    list_box_style =
+    {
+      type = "list_box_style",      
+      maximal_height = 28 * 20      
+    }    
+}
+
+data.raw["gui-style"].default["teleport_ts_dropdown_style_10"] = {
+    type = "dropdown_style",
+    list_box_style =
+    {
+      type = "list_box_style",      
+      maximal_height = 28 * 10      
+    }    
+}
+
+
 data:extend({
     {
         type = "shortcut",
