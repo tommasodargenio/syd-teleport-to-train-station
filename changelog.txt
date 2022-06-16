@@ -1,4 +1,10 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.0.5
+Date: 2022-06-16
+
+  Features:
+    - Added new settings to allow the train station drop down list to be bigger (contributor: Christian Moller Nielsen)
+---------------------------------------------------------------------------------------------------
 Version: 1.0.4
 Date: 2021-08-15
 
