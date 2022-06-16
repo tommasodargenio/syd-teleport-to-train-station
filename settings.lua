@@ -28,5 +28,14 @@ data:extend({
 		maximum_value = 100,
         default_value = 1,
 		order = "b"
+    },
+    {
+        type = "int-setting",
+        name = "teleport-ts-station-list-vertical-size",
+        setting_type = "runtime-per-user",
+        default_value = 10,
+        allowed_values = {10, 20, 30, 40},
+        per_user = true,
+		order = "c"
     }
 })
