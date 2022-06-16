@@ -147,6 +147,20 @@ function teleport_gui_draw(gui,train_stations_list,filter_toggle,firstLoad)
     title_flow.add{type="sprite-button", style="frame_action_button", sprite="utility/close_white", name="close-teleport-ts-window"}
 
     if (table_size(train_stations_list)>0) then
+        local station_list_size = settings.get_player_settings(event.player_index)["teleport-ts-station-list-vertical-size"].value
+        local ts_dropdown_style = ""
+        if ( station_list_size == 10) then
+            ts_dropdown_style = "teleport_ts_dropdown_style_10"
+        elseif (station_list_size == 20) then
+            ts_dropdown_style = "teleport_ts_dropdown_style_20"
+        elseif (station_list_size == 30) then
+            ts_dropdown_style = "teleport_ts_dropdown_style_30"
+        elseif (station_list_size == 40) then
+            ts_dropdown_style = "teleport_ts_dropdown_style_40"
+        end
+       
+        local teleport_ts_dropdown = {type="drop-down", name="teleport-ts-gui-dd", style=ts_dropdown_style, items=train_stations_list, selected_index=1}
+
         local teleport_ts_dropdown = {type="drop-down", name="teleport-ts-gui-dd", items=train_stations_list, selected_index=1}
         local dd_flow = teleport_gui.add{type="flow", name="dd_flow"}            
         dd_flow.add{type="label", name="teleport-ts-gui-dd-label", caption={"mod-interface.teleport-ts-gui-dd-caption"}}
