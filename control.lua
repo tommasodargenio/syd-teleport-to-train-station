@@ -1,7 +1,7 @@
 --[[
      Teleport-To-Train-Station
      a Factorio mod.
-     (C) SyDream - 2020 - v1.0.1
+     (C) SyDream - 2020 - v1.0.6
      MIT License
      https://github.com/tommasodargenio/syd-teleport-to-train-station
      https://mods.factorio.com/mod/syd-teleport-to-train-station
@@ -209,8 +209,10 @@ end
 script.on_event(defines.events.on_gui_text_changed, function(event)
     if (event.element.name=="teleport-ts-gui-dd-filter-query") then         
         train_station_filter = event.element.text
-        gui_location = teleport_gui.location
-        teleport_gui.destroy()
+        if (teleport_gui ~= nil) then 
+            gui_location = teleport_gui.location
+            teleport_gui.destroy()
+        end
         local gui = game.players[event.player_index].gui
         teleport_gui_draw(gui,get_train_stations_name(get_train_stations_list(train_station_filter)), true, false, event)        
     end
@@ -224,13 +226,17 @@ script.on_event(defines.events.on_gui_click, function(event)
     elseif (event.element.name=="teleport-ts-gui-toggle-filter") then
         local gui_win = game.players[event.player_index].gui.screen["teleport-ts-gui"].title_flow
         if (guiElementContains(gui_win.children, "teleport-ts-gui-dd-filter-query")) then
-            gui_location = teleport_gui.location
-            teleport_gui.destroy()
+            if (teleport_gui ~= nil) then 
+                gui_location = teleport_gui.location
+                teleport_gui.destroy()
+            end
             local gui = game.players[event.player_index].gui
             teleport_gui_draw(gui,get_train_stations_name(get_train_stations_list()), false, false, event)
         else
-            gui_location = teleport_gui.location
-            teleport_gui.destroy()
+            if (teleport_gui ~= nil) then 
+                gui_location = teleport_gui.location
+                teleport_gui.destroy()
+            end
             local gui = game.players[event.player_index].gui
             teleport_gui_draw(gui,get_train_stations_name(get_train_stations_list(train_station_filter)), true, false, event)            
         end
