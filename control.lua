@@ -15,7 +15,8 @@ teleport_ts_win = {type="frame",  name="teleport-ts-gui", direction="vertical", 
 train_station_filter = ""
 teleport_gui = nil
 gui_location = nil
-
+last_teleported_station = nil
+last_teleported_station_count = 0
 
 function train_station_teleport(player_idx, station_selected)
     local train_stations_list = get_train_stations_list(train_station_filter)
@@ -27,15 +28,24 @@ function train_station_teleport(player_idx, station_selected)
    
     train_station_position = train_stations_list[station_selected].position
 
-    if train_station_position ~= nil then 
+    if last_teleported_station == train_stations_list[station_selected].name then
+        train_station_position = get_next_train_station(train_stations_list[station_selected].name, last_teleported_station_count)
+    else
+        last_teleported_station = nil
+        last_teleported_station_count = 0
+    end
+    
+    if train_station_position ~= nil then
         if player.vehicle and player.vehicle.valid and player.vehicle.type=="spider-vehicle" then
             player.surface.play_sound({path="utility/cannot_build"})
         elseif player.vehicle and player.vehicle.valid and player.vehicle.type=="car" then
             if math.floor(player.vehicle.position.x + 0.5) ~= math.floor(train_station_position.x + 0.5) or
                math.floor(player.vehicle.position.y + 0.5) ~= math.floor(train_station_position.y + 0.5) then
                 destination_pos = destination_surface.find_non_colliding_position(player.vehicle.prototype.name, train_station_position, 10, 1)
-                if not destination_pos then destination_pos = train_station_position end                
+                if not destination_pos then destination_pos = train_station_position end
                 player.vehicle.teleport(destination_pos, destination_surface)
+                last_teleported_station = train_stations_list[station_selected].name
+                last_teleported_station_count = get_next_station_count(last_teleported_station, last_teleported_station_count)
             end
         elseif player.character and player.character.valid then
 			if math.floor(player.position.x + 0.5) ~= math.floor(train_station_position.x + 0.5) or
@@ -43,16 +53,72 @@ function train_station_teleport(player_idx, station_selected)
                 destination_pos =  destination_surface.find_non_colliding_position(player.character.prototype.name, train_station_position, 10, 1)
                 if not  destination_pos then  destination_pos = train_station_position end
                 player.teleport(destination_pos, destination_surface)
+                last_teleported_station = train_stations_list[station_selected].name
+                last_teleported_station_count = get_next_station_count(last_teleported_station, last_teleported_station_count)
             end
         elseif player and player.valid then
-			player.teleport(train_station_position)            
+			player.teleport(train_station_position)
+            last_teleported_station = train_stations_list[station_selected].name
+            last_teleported_station_count = get_next_station_count(last_teleported_station, last_teleported_station_count)
         end
-    end    
+    end
 end
 
 local function has_value (tab, val)
     for index, value in ipairs(tab) do
         if value == val then
+            return true
+        end
+    end
+    return false
+end
+
+function get_next_station_count(station_name, current_count)
+    current_count = current_count + 1
+    if current_count >= count_train_homonyms(station_name) then
+        current_count = 0
+    end  
+    return current_count
+end
+
+
+function get_next_train_station(station_name, which)
+    local surface = game.surfaces["nauvis"]
+    local t = surface.get_train_stops()
+    local count = 0
+    for _, train_station in pairs(t) do
+        if train_station.backer_name == station_name then
+            if count == which then
+                return train_station.position
+            else
+                count = count + 1
+            end
+        end
+    end
+end
+
+function count_train_homonyms(station_name)
+    local surface = game.surfaces["nauvis"]
+    local t = surface.get_train_stops()
+    local count = 0
+    for _, train_station in pairs(t) do
+        if train_station.backer_name == station_name then
+                count = count + 1
+        end
+    end
+
+    return count
+end
+
+
+function are_there_station_homonyms()
+    local surface = game.surfaces["nauvis"]
+    local t = surface.get_train_stops()
+    local checkerTbl = {}
+    for _, element in ipairs(t) do
+        if not checkerTbl[element.backer_name] then
+            checkerTbl[element.backer_name] = true
+        else
             return true
         end
     end
@@ -122,9 +188,14 @@ end
 
 
 function teleport_gui_draw(gui, train_stations_list, filter_toggle, firstLoad, event)
+    local teleport_ts_btn = nil
     
-    local teleport_ts_btn = {type="button", name="teleport-ts-gui-btn", caption={"mod-interface.teleport-ts-button"}}
-
+    if are_there_station_homonyms() then
+        teleport_ts_btn = {type="button", name="teleport-ts-gui-btn", caption={"mod-interface.teleport-ts-button-more"}}
+    else
+        teleport_ts_btn = {type="button", name="teleport-ts-gui-btn", caption={"mod-interface.teleport-ts-button"}}
+    end
+    
     teleport_gui = gui.screen.add(teleport_ts_win)
 
     local title_flow = teleport_gui.add{type = "flow", name="title_flow"}
