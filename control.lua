@@ -17,6 +17,7 @@ teleport_gui = nil
 gui_location = nil
 last_teleported_station = nil
 last_teleported_station_count = 0
+is_homonyms = false
 
 function train_station_teleport(player_idx, station_selected)
     local train_stations_list = get_train_stations_list(train_station_filter)
@@ -34,7 +35,13 @@ function train_station_teleport(player_idx, station_selected)
         last_teleported_station = nil
         last_teleported_station_count = 0
     end
-    
+
+    local filter_toggle = false
+    if train_station_filter ~= "" then
+        filter_toggle = true
+    end
+
+
     if train_station_position ~= nil then
         if player.vehicle and player.vehicle.valid and player.vehicle.type=="spider-vehicle" then
             player.surface.play_sound({path="utility/cannot_build"})
@@ -179,23 +186,25 @@ function teleport_ts_shortcut(event)
 end
 
 function on_hotkey_main(event)
-    local gui = game.players[event.player_index].gui
-    if not gui.screen["teleport-ts-gui"] then       
-        teleport_gui_draw(gui,get_train_stations_name(get_train_stations_list()), false, true, event)
-    end    
+    draw_gui(event.player_index, nil, false, true)
 end
 
+function draw_gui(player_index, train_station_filter, filter_toggle, firstLoad, is_homonyms)
+    local gui = game.players[player_index].gui
+    local train_station_list = nil
+    resyncTeleportGui(player_index)
 
-
-function teleport_gui_draw(gui, train_stations_list, filter_toggle, firstLoad, event)
-    local teleport_ts_btn = nil
-    
-    if are_there_station_homonyms() then
-        teleport_ts_btn = {type="button", name="teleport-ts-gui-btn", caption={"mod-interface.teleport-ts-button-more"}}
+    if train_station_filter then
+        train_station_list = get_train_stations_name(get_train_stations_list(train_station_filter))
     else
-        teleport_ts_btn = {type="button", name="teleport-ts-gui-btn", caption={"mod-interface.teleport-ts-button"}}
-    end
-    
+        train_station_list = get_train_stations_name(get_train_stations_list())
+    end  
+        
+    teleport_gui_draw(gui, train_station_list, filter_toggle, firstLoad, player_index, is_homonyms)
+end
+
+function teleport_gui_draw(gui, train_stations_list, filter_toggle, firstLoad, player_index, is_homonyms)
+    local teleport_ts_btn = nil  
     teleport_gui = gui.screen.add(teleport_ts_win)
 
     local title_flow = teleport_gui.add{type = "flow", name="title_flow"}
@@ -218,7 +227,7 @@ function teleport_gui_draw(gui, train_stations_list, filter_toggle, firstLoad, e
     title_flow.add{type="sprite-button", style="frame_action_button", sprite="utility/close_white", name="close-teleport-ts-window"}
 
     if (table_size(train_stations_list)>0) then
-        local station_list_size = settings.get_player_settings(event.player_index)["teleport-ts-station-list-vertical-size"].value
+        local station_list_size = settings.get_player_settings(player_index)["teleport-ts-station-list-vertical-size"].value
         local ts_dropdown_style = ""
         if ( station_list_size == 10) then
             ts_dropdown_style = "teleport_ts_dropdown_style_10"
@@ -236,6 +245,12 @@ function teleport_gui_draw(gui, train_stations_list, filter_toggle, firstLoad, e
         local dd_flow = teleport_gui.add{type="flow", name="dd_flow"}            
         dd_flow.add{type="label", name="teleport-ts-gui-dd-label", caption={"mod-interface.teleport-ts-gui-dd-caption"}}
         dd_flow.add(teleport_ts_dropdown)
+
+        if count_train_homonyms(train_stations_list[1]) > 0 or is_homonyms then
+            teleport_ts_btn = {type="button", name="teleport-ts-gui-btn", caption={"mod-interface.teleport-ts-button-more"}}
+        else
+            teleport_ts_btn = {type="button", name="teleport-ts-gui-btn", caption={"mod-interface.teleport-ts-button"}}
+        end
         dd_flow.add(teleport_ts_btn)      
     else 
         local dd_flow = teleport_gui.add{type="flow", name="dd_flow"}
@@ -277,20 +292,37 @@ function resyncTeleportGui(player_index)
 end
 
 
+
+script.on_event(defines.events.on_gui_selection_state_changed, function(event)
+    if (event.element.name=="teleport-ts-gui-dd") then
+        local gui_win = game.players[event.player_index].gui.screen["teleport-ts-gui"]
+        local station_selected = gui_win.dd_flow["teleport-ts-gui-dd"].selected_index
+        local station_list = get_train_stations_list()
+        local total_stations = count_train_homonyms(station_list[station_selected].name)
+        if total_stations > 1 then
+            gui_win.dd_flow["teleport-ts-gui-btn"].caption={"mod-interface.teleport-ts-button-more"}
+        else
+            gui_win.dd_flow["teleport-ts-gui-btn"].caption={"mod-interface.teleport-ts-button"}
+        end
+        
+    end
+end)
+
+
 script.on_event(defines.events.on_gui_text_changed, function(event)
     if (event.element.name=="teleport-ts-gui-dd-filter-query") then         
         train_station_filter = event.element.text
+        resyncTeleportGui(event.player_index)
         if (teleport_gui ~= nil) then 
             gui_location = teleport_gui.location
             teleport_gui.destroy()
         end
-        local gui = game.players[event.player_index].gui
-        teleport_gui_draw(gui,get_train_stations_name(get_train_stations_list(train_station_filter)), true, false, event)        
+        draw_gui(event.player_index, train_station_filter, true, false)      
     end
 end)
 
 script.on_event(defines.events.on_gui_click, function(event)
-    resyncTeleportGui(event.player_index)
+    resyncTeleportGui(event.player_index)   
     if (event.element.name=="teleport-ts-gui-btn") then
         local gui_win = game.players[event.player_index].gui.screen["teleport-ts-gui"]
         train_station_teleport(event.player_index, gui_win.dd_flow["teleport-ts-gui-dd"].selected_index)    
@@ -301,15 +333,13 @@ script.on_event(defines.events.on_gui_click, function(event)
                 gui_location = teleport_gui.location
                 teleport_gui.destroy()
             end
-            local gui = game.players[event.player_index].gui
-            teleport_gui_draw(gui,get_train_stations_name(get_train_stations_list()), false, false, event)
+            draw_gui(event.player_index, nil, false, false)
         else
             if (teleport_gui ~= nil) then 
                 gui_location = teleport_gui.location
                 teleport_gui.destroy()
-            end
-            local gui = game.players[event.player_index].gui
-            teleport_gui_draw(gui,get_train_stations_name(get_train_stations_list(train_station_filter)), true, false, event)            
+            end          
+            draw_gui(event.player_index, train_station_filter, true, false)
         end
     elseif (event.element.name=="close-teleport-ts-window") then
         if (teleport_gui ~= nil) then 
@@ -319,10 +349,7 @@ script.on_event(defines.events.on_gui_click, function(event)
             cleanGUI()
         end
     elseif (event.element.name=="toggleTeleportTS") then
-        local gui = game.players[event.player_index].gui
-        if not gui.screen["teleport-ts-gui"] then       
-            teleport_gui_draw(gui,get_train_stations_name(get_train_stations_list()), false, true, event)
-        end        
+        draw_gui(event.player_index, nil, false, true)     
     end    
 end)
 
