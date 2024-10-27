@@ -1,4 +1,12 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.0.7
+Date: 2024-01-22
+
+  Features:
+    - Added new feature to cycle through stations if multiple exists with the same name
+  Changes:
+    - Button to activate teleport will change its caption if there are more than one station with the same name, indicating that if clicked again it will teleport the player to the next named station
+---------------------------------------------------------------------------------------------------
 Version: 1.0.6
 Date: 2022-07-18
 
